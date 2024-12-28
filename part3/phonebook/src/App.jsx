@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 import axios from 'axios'
 import personsService from './services/persons'
 
@@ -10,6 +11,9 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
+
+
 
   const hook = () => {
     console.log('effect')
@@ -42,6 +46,13 @@ const App = () => {
     setFilter(event.target.value)
   }
 
+  const showNotificationMessage = (message, isError = false) => {
+    setNotificationMessage({message, isError})
+    setTimeout(() => {
+      setNotificationMessage(null)
+    }, 5000)
+  }
+  
   const addPerson = (event) => {
     event.preventDefault()
     
@@ -54,6 +65,7 @@ const App = () => {
 
     if (index == -1) {
       personsService.create(newPerson).then((added) => {
+        showNotificationMessage('Added ' + newPerson.name)
         setPersons(persons.concat(added))
         setNewName('')
         setNewNumber('')
@@ -64,7 +76,17 @@ const App = () => {
       // ask to edit the number
       const editPerson = persons[index]
       if( window.confirm('This person is already saved on the list, do you want to update the number ?')) {
-        personsService.update(editPerson.id, newPerson).then((updatedPerson) => setPersons(persons.map(person => person.id == editPerson.id ? updatedPerson : person)))
+        personsService.update(editPerson.id, newPerson)
+        .then((updatedPerson) => {
+          setPersons(persons.map(person => person.id == editPerson.id ? updatedPerson : person))
+          showNotificationMessage('Updated ' + newPerson.name + " number")
+          setNewName('')
+          setNewNumber('')
+        })
+        .catch((error) => {
+          showNotificationMessage('Information of ' + newPerson.name + " has already been deleted from the server", true)
+        })
+  
       }
 
     }
@@ -85,6 +107,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification message={notificationMessage} />
       <h2>Phonebook</h2>
         <div>
           <Filter text={filter} handleFilterChange={handleFilterChange}></Filter>
