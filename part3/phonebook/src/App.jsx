@@ -3,6 +3,7 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import axios from 'axios'
+import personsService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -13,12 +14,12 @@ const App = () => {
   const hook = () => {
     console.log('effect')
   
-    const eventHandler = response => {
+    const eventHandler = persons => {
       console.log('promise fulfilled')
-      setPersons(response.data)
+      setPersons(persons)
     }
 
-    const promise = axios.get('http://localhost:3001/persons')
+    const promise = personsService.getAll()
     promise.then(eventHandler)
     }
     
@@ -43,20 +44,39 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
+    
+    const index = persons.findIndex(x => x.name == newName)
 
-    if (persons.findIndex(x => x.name == newName) == -1) {
-      const newPerson = {
-        name: newName,
-        number: newNumber,
-        id: Math.max(...persons.map(person => person.id)) + 1
+    const newPerson = {
+      name: newName,
+      number: newNumber
+    }
+
+    if (index == -1) {
+      personsService.create(newPerson).then((added) => {
+        setPersons(persons.concat(added))
+        setNewName('')
+        setNewNumber('')
       }
-      setPersons(persons.concat(newPerson))
-      setNewName('')
-      setNewNumber('')
+    )
+
     } else {
-      alert(`${newName} is already added to phonebook`)
+      // ask to edit the number
+      const editPerson = persons[index]
+      if( window.confirm('This person is already saved on the list, do you want to update the number ?')) {
+        personsService.update(editPerson.id, newPerson).then((updatedPerson) => setPersons(persons.map(person => person.id == editPerson.id ? updatedPerson : person)))
+      }
+
     }
   }
+
+  const deletePerson = (person) => {
+   if( window.confirm('Do you want to delete this person ?')) {
+    personsService.deleteItem(person.id).then((response) => console.log(response))
+    setPersons(persons.filter(p => p.id != person.id))
+   }
+  }
+
 
   const filteredPersons =
   filter == '' ? persons :
@@ -73,7 +93,7 @@ const App = () => {
       <PersonForm addPerson={addPerson} name={newName} handlePersonChange={handlePersonChange} number={newNumber} handleNumberChange={handleNumberChange}>
       </PersonForm>
       <h2>Numbers</h2>
-      <Persons persons = {filteredPersons}></Persons>
+      <Persons persons = {filteredPersons} onDelete = {deletePerson}></Persons>
     </div>
   )
 }
