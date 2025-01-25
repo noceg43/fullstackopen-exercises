@@ -11,19 +11,19 @@ const App = () => {
 
   const hook = () => {
     console.log('effect')
-  
+
     const eventHandler = initialData => {
       console.log('promise fulfilled')
       setPersons(initialData)
     }
-  
+
     const promise = personService.getAll()
     promise.then(eventHandler)
-    }
-    
-    // the hook function is executed always after the component is rendered
-    // the second paramater [] define how often the hook function is called (only one time if empty)
-    useEffect(hook, []) 
+  }
+
+  // the hook function is executed always after the component is rendered
+  // the second paramater [] define how often the hook function is called (only one time if empty)
+  useEffect(hook, [])
 
 
   const [newName, setNewName] = useState('')
@@ -48,40 +48,38 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
 
-    if (persons.findIndex(x => x.name == newName) == -1) {
-      const newPerson = {
-        name: newName,
-        number: newNumber
-      }
+    const newPerson = {
+      name: newName,
+      number: newNumber
+    }
 
-      personService
+    personService
       .create(newPerson)
-      .then(addedPerson => {
-        setPersons(persons.concat(addedPerson))
+      .then(_ => {
+        // update the state of persons by recalling the hook function
+        hook()
         setNewName('')
         setNewNumber('')
       })
-    } else {
-      alert(`${newName} is already added to phonebook`)
-    }
+
   }
 
   const filteredPersons =
-  filter == '' ? persons :
-  persons.filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()))
+    filter == '' ? persons :
+      persons.filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()))
 
 
   return (
     <div>
       <h2>Phonebook</h2>
-        <div>
-          <Filter text={filter} handleFilterChange={handleFilterChange}></Filter>
-        </div>
+      <div>
+        <Filter text={filter} handleFilterChange={handleFilterChange}></Filter>
+      </div>
       <h2>add a new</h2>
       <PersonForm addPerson={addPerson} name={newName} handlePersonChange={handlePersonChange} number={newNumber} handleNumberChange={handleNumberChange}>
       </PersonForm>
       <h2>Numbers</h2>
-      <Persons persons = {filteredPersons}></Persons>
+      <Persons persons={filteredPersons}></Persons>
     </div>
   )
 }
