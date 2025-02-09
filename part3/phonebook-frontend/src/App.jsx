@@ -3,6 +3,7 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personService from './services/persons'
+import ErrorText from './components/Error'
 
 const App = () => {
 
@@ -29,6 +30,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [error, setError] = useState('')
 
 
 
@@ -60,7 +62,7 @@ const App = () => {
         hook()
         setNewName('')
         setNewNumber('')
-      })
+      }).catch(error => { setError(error.response.data.error) })
 
   }
 
@@ -72,6 +74,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>
+        {(error) ?
+          <ErrorText error={error} ></ErrorText> : null}
+      </div>
       <div>
         <Filter text={filter} handleFilterChange={handleFilterChange}></Filter>
       </div>
