@@ -48,8 +48,8 @@ describe('favorite blog', () => {
   test('when list has only one blog, equals the blog itself', () => {
     const result = listHelper.favoriteBlog([dataBlogs.blogs[0]])
     assert.deepStrictEqual(result, {
-      title: "React patterns",
-      author: "Michael Chan",
+      title: 'React patterns',
+      author: 'Michael Chan',
       likes: 7
     })
   })
@@ -57,8 +57,8 @@ describe('favorite blog', () => {
   test('when list has a lot of blogs, return the one with more likes', () => {
     const result = listHelper.favoriteBlog(dataBlogs.blogs)
     assert.deepStrictEqual(result, {
-      title: "Canonical string reduction",
-      author: "Edsger W. Dijkstra",
+      title: 'Canonical string reduction',
+      author: 'Edsger W. Dijkstra',
       likes: 12
     })
   })
@@ -75,7 +75,7 @@ describe('most likes', () => {
   test('when list has only one blog, equals the author of that', () => {
     const result = listHelper.mostLikes([dataBlogs.blogs[0]])
     assert.deepStrictEqual(result, {
-      author: "Michael Chan",
+      author: 'Michael Chan',
       likes: 7
     })
   })
@@ -83,7 +83,7 @@ describe('most likes', () => {
   test('when list has a lot of blogs, return the author with more likes', () => {
     const result = listHelper.mostLikes(dataBlogs.blogs)
     assert.deepStrictEqual(result, {
-      author: "Edsger W. Dijkstra",
+      author: 'Edsger W. Dijkstra',
       likes: 17
     })
   })
@@ -101,7 +101,7 @@ describe('most blogs', () => {
   test('when list has only one blog, equals the author of that', () => {
     const result = listHelper.mostBlogs([dataBlogs.blogs[0]])
     assert.deepStrictEqual(result, {
-      author: "Michael Chan",
+      author: 'Michael Chan',
       blogs: 1
     })
   })
@@ -109,7 +109,7 @@ describe('most blogs', () => {
   test('when list has a lot of blogs, return the author with more blogs', () => {
     const result = listHelper.mostBlogs(dataBlogs.blogs)
     assert.deepStrictEqual(result, {
-      author: "Robert C. Martin",
+      author: 'Robert C. Martin',
       blogs: 3
     })
   })

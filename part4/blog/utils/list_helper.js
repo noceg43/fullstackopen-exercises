@@ -1,13 +1,12 @@
-const blog = require("../models/blog")
 
 
-const dummy = (blogs) => {
+const dummy = () => {
   return 1
 }
 
 
 const totalLikes = (blogs) => {
-  likes = blogs.map(blog => blog.likes)
+  let likes = blogs.map(blog => blog.likes)
   return likes.reduce((p, c) => p + c)
 }
 
@@ -15,13 +14,13 @@ const favoriteBlog = (blogs) => {
   if (blogs.length === 0) {
     return null
   }
-  topBlog = blogs[0]
+  let topBlog = blogs[0]
 
   blogs.forEach(element => {
     if (element.likes > topBlog.likes) {
       topBlog = element
     }
-  });
+  })
   return {
     title: topBlog.title,
     author: topBlog.author,
@@ -47,7 +46,7 @@ const mostBlogs = (blogs) => {
     })
   })
 
-  let author = ""
+  let author = ''
   let mostBlogs = 0
 
   for (const [key, value] of Object.entries(authorsAndBlogs)) {
@@ -59,8 +58,8 @@ const mostBlogs = (blogs) => {
 
 
   return {
-    "author": author,
-    "blogs": mostBlogs
+    'author': author,
+    'blogs': mostBlogs
   }
 
 }
@@ -83,7 +82,7 @@ const mostLikes = (blogs) => {
     })
   })
 
-  let author = ""
+  let author = ''
   let mostLikes = 0
 
   for (const [key, value] of Object.entries(authorsAndLikes)) {
@@ -95,8 +94,8 @@ const mostLikes = (blogs) => {
 
 
   return {
-    "author": author,
-    "likes": mostLikes
+    'author': author,
+    'likes': mostLikes
   }
 
 }
