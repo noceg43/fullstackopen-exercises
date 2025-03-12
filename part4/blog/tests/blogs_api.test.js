@@ -6,7 +6,7 @@ const assert = require('node:assert')
 const { blogs } = require('../tests/blogs_for_test')
 const Blog = require('../models/blog')
 const helper = require('../tests/test_helper')
-
+const { blogsInDb } = require('../tests/test_helper')
 
 
 
@@ -18,10 +18,10 @@ const api = supertest(app)
 beforeEach(async () => {
   await Blog.deleteMany({})
 
-  const noteObjects = blogs
+  const blogObjects = blogs
     .map(blog => new Blog(blog))
   // array of promises
-  const promiseArray = noteObjects.map(blog => blog.save())
+  const promiseArray = blogObjects.map(blog => blog.save())
   // wait for all promises to resolve (like on Dart Future.wait)
   await Promise.all(promiseArray)
 })
@@ -108,7 +108,34 @@ test('adding a blog without title or url is forbidden', async () => {
 
 })
 
+test('delete an existing blog', async () => {
+  const blogToDelete = blogs[0]
 
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const allBlogs = await blogsInDb()
+  allBlogs.forEach(blog => {
+    assert.notStrictEqual(blog.id, blogToDelete.id)
+  })
+})
+
+test('edit an existing blog', async () => {
+  const blogToEdit = (await blogsInDb())[0]
+
+  await api
+    .put(`/api/blogs/${blogToEdit.id}`)
+    .send({ likes: 100 })
+    .expect(200)
+
+  const allBlogs = await blogsInDb()
+  allBlogs.forEach(blog => {
+    if (blog.id === blogToEdit.id) {
+      assert.strictEqual(blog.likes, 100)
+    }
+  })
+})
 
 // after, used to run something once all tests have been run
 after(async () => {
