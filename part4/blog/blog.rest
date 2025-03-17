@@ -1,0 +1,16 @@
+POST http://localhost:3001/api/blogs/ HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImdpZ2kiLCJpZCI6IjY3ZDg4YzRmMzU1NzVmOTJmY2MxOTYwNCIsImlhdCI6MTc0MjI0NTc0NCwiZXhwIjoxNzQyMjQ5MzQ0fQ.UAyrldhggL-tVWIhTwet7I-4bQ2NXKMLcBgUUmSJeUY
+
+{
+    "title": "My first blog 7",
+    "author": "John Doe",
+    "url": "http://www.google.com",
+    "likes": 0
+}
+###
+GET http://localhost:3001/api/blogs/ HTTP/1.1
+###
+DELETE http://localhost:3001/api/blogs/67d88f82a57ff867268bee74 HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImdpZ2kiLCJpZCI6IjY3ZDg4YzRmMzU1NzVmOTJmY2MxOTYwNCIsImlhdCI6MTc0MjI0NTc0NCwiZXhwIjoxNzQyMjQ5MzQ0fQ.UAyrldhggL-tVWIhTwet7I-4bQ2NXKMLcBgUUmSJeUY
