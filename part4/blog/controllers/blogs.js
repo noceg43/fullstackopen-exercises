@@ -7,7 +7,7 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
-  if (request.body.title && request.body.url) {
+  if (request.body.title && request.body.url && request.body.author) {
     const user = request.user
 
     if (!user) {
@@ -19,6 +19,7 @@ blogsRouter.post('/', async (request, response) => {
     const blog = new Blog({
       title: request.body.title,
       url: request.body.url,
+      author: request.body.author,
       user: user.id
     })
 
