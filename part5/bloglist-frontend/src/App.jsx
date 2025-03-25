@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import NoteForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 
 
@@ -15,12 +17,6 @@ const App = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
-    const [title, setTitle] = useState('')
-    const [author, setAuthor] = useState('')
-    const [url, setUrl] = useState('')
-
-
-
     useEffect(() => {
         blogService.getAll().then(blogs =>
             setBlogs(blogs)
@@ -32,6 +28,8 @@ const App = () => {
             blogService.setToken(user.token)
         }
     }, [])
+
+
 
     const showMessage = (message, isError) => {
         console.log(message)
@@ -68,23 +66,38 @@ const App = () => {
         blogService.setToken
     }
 
-
-    const handleCreate = async (event) => {
-        event.preventDefault()
-        const blogObject = {
-            title: title,
-            author: author,
-            url: url
-        }
+    const createBlog = async (blogObject) => {
         try {
             const newBlog = await blogService.create(blogObject)
             setBlogs(blogs.concat(newBlog))
-            setTitle('')
-            setAuthor('')
-            setUrl('')
             showMessage('Blog created', false)
         } catch (exception) {
+            console.log(exception)
             showMessage('Failed to create blog', true)
+        }
+    }
+
+    const updateBlog = async (blogObject) => {
+        try {
+            await blogService.update(blogObject.id, { ...blogObject, likes: blogObject.likes + 1 })
+            blogService.getAll().then(blogs =>
+                setBlogs(blogs)
+            )
+            showMessage('Blog updated', false)
+        } catch (exception) {
+            console.log(exception)
+            showMessage('Failed to update blog', true)
+        }
+    }
+
+    const removeBlog = async (id) => {
+        try {
+            await blogService.remove(id)
+            setBlogs(blogs.filter(blog => blog.id !== id))
+            showMessage('Blog removed', false)
+        } catch (exception) {
+            console.log(exception)
+            showMessage('Failed to remove blog', true)
         }
     }
 
@@ -131,41 +144,12 @@ const App = () => {
                         </button>
                     </div>
                     {blogs.map(blog =>
-                        <Blog key={blog.id} blog={blog} />)}
-                    <h2>Create New</h2>
-                    <form onSubmit={handleCreate}>
-                        <div>
-                            title
-                            <input
-                                type="text"
-                                value={title}
-                                name="title"
-                                onChange={({ target }) => setTitle(target.value)}
-                            />
-                        </div>
-                        <div>
-                            author
-                            <input
-                                type="text"
-                                value={author}
-                                name="author"
-                                onChange={({ target }) => setAuthor(target.value)}
-                            />
-                        </div>
-                        <div>
-                            url
-                            <input
-                                type="text"
-                                value={url}
-                                name="url"
-                                onChange={({ target }) => setUrl(target.value)}
-                            />
-                        </div>
-                        <button type="submit">create</button>
-                    </form>
+                        <Blog key={blog.id} blog={blog} onLikePressed={() => updateBlog(blog)} onDelete={() => removeBlog(blog.id)} />
+                    )}
+                    <Togglable buttonLabel='new note'>
+                        <NoteForm createBlog={createBlog} />
+                    </Togglable>
                 </div>
-
-
             }
 
 
