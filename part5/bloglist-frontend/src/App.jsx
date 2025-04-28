@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import NoteForm from './components/BlogForm'
+import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 
 
@@ -147,7 +147,7 @@ const App = () => {
                         <Blog key={blog.id} blog={blog} onLikePressed={() => updateBlog(blog)} onDelete={() => removeBlog(blog.id)} />
                     )}
                     <Togglable buttonLabel='new note'>
-                        <NoteForm createBlog={createBlog} />
+                        <BlogForm createBlog={createBlog} />
                     </Togglable>
                 </div>
             }
