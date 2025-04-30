@@ -68,8 +68,10 @@ const App = () => {
 
     const createBlog = async (blogObject) => {
         try {
-            const newBlog = await blogService.create(blogObject)
-            setBlogs(blogs.concat(newBlog))
+            await blogService.create(blogObject)
+            blogService.getAll().then(blogs =>
+                setBlogs(blogs)
+            )
             showMessage('Blog created', false)
         } catch (exception) {
             console.log(exception)
@@ -119,6 +121,7 @@ const App = () => {
                             username
                             <input
                                 type="text"
+                                data-testid='username'
                                 value={username}
                                 name="Username"
                                 onChange={({ target }) => setUsername(target.value)}
@@ -128,6 +131,7 @@ const App = () => {
                             password
                             <input
                                 type="password"
+                                data-testid='password'
                                 value={password}
                                 name="Password"
                                 onChange={({ target }) => setPassword(target.value)}
@@ -144,14 +148,18 @@ const App = () => {
                         </button>
                     </div>
                     {blogs.map(blog =>
-                        <Blog key={blog.id} blog={blog} onLikePressed={() => updateBlog(blog)} onDelete={() => removeBlog(blog.id)} />
+                        <Blog key={blog.id}
+                            blog={blog}
+                            onLikePressed={() => updateBlog(blog)}
+                            onDelete={() => removeBlog(blog.id)}
+                            currentUser={user}
+                        />
                     )}
-                    <Togglable buttonLabel='new note'>
+                    <Togglable buttonLabel='new blog'>
                         <BlogForm createBlog={createBlog} />
                     </Togglable>
                 </div>
             }
-
 
         </div>
     )
