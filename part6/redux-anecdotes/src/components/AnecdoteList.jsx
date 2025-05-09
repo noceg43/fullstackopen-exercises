@@ -31,7 +31,11 @@ Anecdote.propTypes = {
 const AnecdoteList = () => {
 
     const dispatch = useDispatch()
-    const anecdotes = useSelector(state => state.sort((a, b) => b.votes - a.votes))
+    const anecdotes = useSelector(state => state.anecdotes.sort((a, b) => b.votes - a.votes))
+
+    const filter = useSelector(state => state.filter)
+
+    const anecdotesToShow = anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
 
     const vote = (id) =>
         dispatch(voteAnecdote(id))
@@ -39,8 +43,7 @@ const AnecdoteList = () => {
 
     return (
         <div>
-            <h2>Anecdotes</h2>
-            {anecdotes.map(anecdote =>
+            {anecdotesToShow.map(anecdote =>
                 <Anecdote key={anecdote.id} anecdote={anecdote} onVoteTap={vote} />
             )}
         </div>
