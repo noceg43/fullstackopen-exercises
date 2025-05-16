@@ -1,3 +1,6 @@
+import {useNotificationValue} from '../NotificationHooks'
+import React from 'react'
+
 const Notification = () => {
   const style = {
     border: 'solid',
@@ -5,12 +8,14 @@ const Notification = () => {
     borderWidth: 1,
     marginBottom: 5
   }
-  
-  if (true) return null
+
+  const { message, show } = useNotificationValue()
+
+  if (!show) return null
 
   return (
     <div style={style}>
-      
+      {message}
     </div>
   )
 }
