@@ -1,0 +1,8 @@
+### Test ping endpoint
+GET http://localhost:3001/api/ping
+
+### Alternative ping test with headers
+GET http://localhost:3001/api/ping
+Content-Type: application/json
+
+###
